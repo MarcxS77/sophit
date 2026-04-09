@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'VitalSync — Saúde & Performance',
-  description: 'Plataforma SaaS para profissionais de saúde e fitness',
+  title: 'Sophit — Saúde & Performance',
+  description: 'Plataforma para monitoramento de saúde e performance.',
 }
 
 export default function RootLayout({
