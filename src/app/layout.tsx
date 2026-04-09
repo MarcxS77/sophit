@@ -1,16 +1,13 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { SplashProvider } from '@/components/SplashProvider'
 
 export const metadata: Metadata = {
   title: 'Sophit — Saúde & Performance',
-  description: 'Plataforma para monitoramento de saúde e performance.',
+  description: 'Plataforma SaaS para profissionais de saúde e fitness',
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head />
@@ -27,7 +24,9 @@ export default function RootLayout({
             `,
           }}
         />
-        {children}
+        <SplashProvider>
+          {children}
+        </SplashProvider>
       </body>
     </html>
   )
