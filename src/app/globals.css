@@ -180,3 +180,27 @@
   }
   .dark .sidebar-link-active { background-color: rgb(194 65 12 / 0.2); color: #fb923c; }
 }
+
+/* ── Mobile responsiveness fixes ─────────────────────────── */
+@layer utilities {
+  /* Padding extra no conteúdo principal para não sobrepor o botão hamburguer */
+  @media (max-width: 1023px) {
+    main {
+      padding-top: 1rem !important;
+    }
+    /* Garante que cards não transbordam */
+    .card {
+      overflow-wrap: break-word;
+      word-break: break-word;
+    }
+    /* Botões menores no mobile */
+    .btn-primary, .btn-secondary {
+      font-size: 0.8rem;
+      padding: 0.4rem 0.75rem;
+    }
+    /* Badges não quebram */
+    .badge, .badge-pending, .badge-done {
+      white-space: nowrap;
+    }
+  }
+}

@@ -18,20 +18,20 @@ export default async function UsuariosPage() {
     .order('created_at', { ascending: false })
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <Users className="h-6 w-6" style={{ color: '#f97316' }} />
+    <div className="max-w-5xl mx-auto px-2 sm:px-0">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+        <div className="flex-1">
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2">
+            <Users className="h-5 w-5 flex-shrink-0" style={{ color: '#f97316' }} />
             Alunos
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-muted-foreground text-sm mt-0.5">
             {profiles?.length ?? 0} aluno{(profiles?.length ?? 0) !== 1 ? 's' : ''} cadastrado{(profiles?.length ?? 0) !== 1 ? 's' : ''}
           </p>
         </div>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <input type="search" placeholder="Buscar aluno..." className="input-base pl-9 w-64" />
+          <input type="search" placeholder="Buscar aluno..." className="input-base pl-9 w-full sm:w-56" />
         </div>
       </div>
 
@@ -41,19 +41,18 @@ export default async function UsuariosPage() {
             const initials = (profile.full_name ?? profile.email)
               .split(' ').slice(0, 2).map((n: string) => n[0]).join('').toUpperCase()
             return (
-              <div key={profile.id} className="flex items-center gap-4 p-4 border-b border-border last:border-0 hover:bg-muted/30 transition-colors">
-                <div className="h-10 w-10 rounded-full flex items-center justify-center flex-shrink-0 text-white text-sm font-semibold"
-                  style={{ background: 'linear-gradient(135deg,#f97316,#c2410c)' }}>
-                  {initials}
+              <div key={profile.id} className="flex flex-col sm:flex-row sm:items-center gap-3 p-4 border-b border-border last:border-0">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="h-9 w-9 rounded-full flex items-center justify-center flex-shrink-0 text-white text-sm font-semibold"
+                    style={{ background: 'linear-gradient(135deg,#f97316,#c2410c)' }}>
+                    {initials}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-medium text-sm text-foreground truncate">{profile.full_name ?? 'Sem nome'}</p>
+                    <p className="text-xs text-muted-foreground truncate">{profile.email}</p>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm text-foreground">{profile.full_name ?? 'Sem nome'}</p>
-                  <p className="text-xs text-muted-foreground">{profile.email}</p>
-                </div>
-                <div className="text-xs text-muted-foreground hidden sm:block">
-                  Desde {format(new Date(profile.created_at), "MMM 'de' yyyy", { locale: ptBR })}
-                </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-shrink-0 pl-12 sm:pl-0">
                   <Link
                     href={`/admin/usuarios/${profile.id}`}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-border hover:bg-muted transition-colors text-foreground"
