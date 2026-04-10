@@ -14,7 +14,8 @@ export default async function TreinosPage() {
     .from('treinos')
     .select('*')
     .eq('user_id', user.id)
-    .order('data_atribuicao', { ascending: false })
+    .order('data_atribuicao', { ascending: true })
+    .order('titulo', { ascending: true })
 
   const ativos = treinos?.filter(t => t.ativo) ?? []
   const inativos = treinos?.filter(t => !t.ativo) ?? []

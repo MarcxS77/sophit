@@ -18,7 +18,7 @@ export default async function UserProfilePage({ params }: { params: { id: string
   const [{ data: profile }, { data: avaliacoes }, { data: treinos }] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', params.id).single(),
     supabase.from('avaliacoes_fisicas').select('*').eq('user_id', params.id).order('created_at'),
-    supabase.from('treinos').select('*').eq('user_id', params.id).order('data_atribuicao', { ascending: false }),
+    supabase.from('treinos').select('*').eq('user_id', params.id).order('data_atribuicao', { ascending: true }).order('titulo', { ascending: true }),
   ])
 
   if (!profile) notFound()
