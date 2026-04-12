@@ -9,6 +9,7 @@ import { EvolutionCharts } from '@/components/admin/EvolutionCharts'
 import { DeleteUserButton } from '@/components/admin/DeleteUserButton'
 import { FotosProgresso } from '@/components/FotosProgresso'
 import { TreinoCardAdmin } from '@/components/admin/TreinoCardAdmin'
+import { TreinosListAdmin } from '@/components/admin/TreinosListAdmin'
 
 export default async function UserProfilePage({ params }: { params: { id: string } }) {
   const supabase = createClient()
@@ -89,14 +90,7 @@ export default async function UserProfilePage({ params }: { params: { id: string
               + Novo treino
             </Link>
           </div>
-          <div className="space-y-6">
-            {treinos.map((t, i) => (
-              <div key={t.id}>
-                <TreinoCardAdmin treino={t} userId={params.id} />
-                {i < treinos.length - 1 && <div className="border-b border-border mt-6" />}
-              </div>
-            ))}
-          </div>
+          <TreinosListAdmin treinos={treinos} userId={params.id} />
         </div>
       )}
 
