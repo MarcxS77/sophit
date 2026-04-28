@@ -2,10 +2,10 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { ArrowLeft, Dumbbell } from 'lucide-react'
+import { ArrowLeft, Dumbbell, Scale } from 'lucide-react'
 import Link from 'next/link'
-import { AvaliacaoForm } from '@/components/admin/AvaliacaoForm'
-import { EvolutionCharts } from '@/components/admin/EvolutionCharts'
+import { AvaliacaoSection } from '@/components/admin/AvaliacaoSection'
+import { AvaliacaoResumo } from '@/components/admin/AvaliacaoResumo'
 import { DeleteUserButton } from '@/components/admin/DeleteUserButton'
 import { FotosProgresso } from '@/components/FotosProgresso'
 import { TreinoCardAdmin } from '@/components/admin/TreinoCardAdmin'
@@ -18,18 +18,17 @@ export default async function UserProfilePage({ params }: { params: { id: string
 
   const [{ data: profile }, { data: avaliacoes }, { data: treinos }] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', params.id).single(),
-    supabase.from('avaliacoes_fisicas').select('*').eq('user_id', params.id).order('created_at'),
+    supabase.from('avaliacoes_fisicas').select('*').eq('user_id', params.id).order('created_at', { ascending: false }),
     supabase.from('treinos').select('*').eq('user_id', params.id).order('data_atribuicao', { ascending: true }).order('titulo', { ascending: true }),
   ])
 
   if (!profile) notFound()
 
-  const lastAvaliacao = avaliacoes && avaliacoes.length > 0 ? avaliacoes[avaliacoes.length - 1] : null
   const initials = (profile.full_name ?? profile.email)
     .split(' ').slice(0, 2).map((n: string) => n[0]).join('').toUpperCase()
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 px-2 sm:px-0">
+    <div className="max-w-6xl mx-auto space-y-6 px-2 sm:px-0">
       <Link href="/admin/usuarios"
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
         <ArrowLeft className="h-4 w-4" />
@@ -53,28 +52,17 @@ export default async function UserProfilePage({ params }: { params: { id: string
               <DeleteUserButton userId={params.id} userName={profile.full_name ?? 'Sem nome'} userEmail={profile.email} />
             </div>
           </div>
-          {lastAvaliacao && (
-            <div className="grid grid-cols-3 gap-3 w-full sm:w-auto">
-              {[
-                { label: 'Peso', value: `${lastAvaliacao.peso}kg` },
-                { label: 'IMC', value: lastAvaliacao.imc?.toFixed(1) ?? '—' },
-                { label: '% Gordura', value: lastAvaliacao.percentual_gordura ? `${lastAvaliacao.percentual_gordura}%` : '—' },
-              ].map(s => (
-                <div key={s.label} className="bg-muted/50 rounded-lg p-2.5 text-center">
-                  <p className="text-base sm:text-lg font-bold text-foreground">{s.value}</p>
-                  <p className="text-xs text-muted-foreground">{s.label}</p>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
       </div>
 
-      {/* Evolution Charts */}
-      {avaliacoes && avaliacoes.length > 1 && (
+      {/* Resumo da última avaliação — sempre visível */}
+      {avaliacoes && avaliacoes.length > 0 && (
         <div className="card p-5 sm:p-6">
-          <h2 className="font-semibold text-foreground mb-6">Evolução Corporal</h2>
-          <EvolutionCharts avaliacoes={avaliacoes} />
+          <h2 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+            <Scale className="h-4 w-4" style={{ color: '#f97316' }} />
+            Dados da Avaliação Física
+          </h2>
+          <AvaliacaoResumo avaliacoes={avaliacoes} />
         </div>
       )}
 
@@ -103,13 +91,17 @@ export default async function UserProfilePage({ params }: { params: { id: string
         <FotosProgresso userId={params.id} isAdmin={true} />
       </div>
 
-      {/* Nova Avaliação */}
-      <div>
-        <h2 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+      {/* Avaliação Física — nova + histórico */}
+      <div className="card p-5 sm:p-6">
+        <h2 className="font-semibold text-foreground mb-5 flex items-center gap-2">
           <span className="h-2 w-2 rounded-full" style={{ background: '#f97316' }} />
-          Nova Avaliação Física
+          Avaliação Física
         </h2>
-        <AvaliacaoForm userId={params.id} userName={profile.full_name ?? profile.email} />
+        <AvaliacaoSection
+          userId={params.id}
+          userName={profile.full_name ?? profile.email}
+          initialAvaliacoes={avaliacoes ?? []}
+        />
       </div>
     </div>
   )
