@@ -7,6 +7,7 @@ import { Scale, Calculator, Loader2, CheckCircle2, ChevronDown, ChevronUp } from
 interface Props {
   userId: string
   userName: string
+  onSaved?: () => void
 }
 
 function calcIMC(peso: number, altura: number) {
@@ -44,7 +45,7 @@ function NumField({ label, value, onChange, unit = 'cm', step = '0.1' }:
   )
 }
 
-export function AvaliacaoForm({ userId, userName }: Props) {
+export function AvaliacaoForm({ userId, userName, onSaved }: Props) {
   const supabase = createClient()
   const [loading, setLoading] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -113,7 +114,11 @@ export function AvaliacaoForm({ userId, userName }: Props) {
     })
 
     setLoading(false)
-    if (!error) { setSaved(true); setTimeout(() => setSaved(false), 3000) }
+    if (!error) {
+      setSaved(true)
+      onSaved?.()
+      setTimeout(() => setSaved(false), 3000)
+    }
   }
 
   return (
